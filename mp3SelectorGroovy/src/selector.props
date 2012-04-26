@@ -1,0 +1,9 @@
+# music root dir
+root = C:/Musik/MP3
+
+# number of playlist songs when selecting with buttons 
+playlist = 30
+
+# file path of used music player 
+#player = C:/Freeware/Musik/Winamp/winamp.exe
+player = C:/Programme/Windows Media Player/wmplayer.exe
