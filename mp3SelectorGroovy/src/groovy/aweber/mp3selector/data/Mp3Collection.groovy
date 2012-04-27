@@ -6,7 +6,6 @@ import groovy.aweber.mp3selector.data.Mp3File
 class Mp3Collection {
 	int _numberOfArtists
 	int _numberOfAlbums
-	long _smallestFileSize
 	List<Mp3File> _mp3List = new ArrayList<Mp3File>()
 	// key: artist, value: Map (key: album, value: List of Mp3File))
 	Map<String, TreeMap> _artistMap = new TreeMap<String, TreeMap>()

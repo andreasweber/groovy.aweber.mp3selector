@@ -35,7 +35,7 @@ class SelectorGUI {
 	}
 
 	/** Create the GUI elements with Groovy SwingBuilder. */
-	private void createAndShowGUI() {
+	public void init() {
 		UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel")
 		// Make sure we have nice window decorations.
 		JFrame.setDefaultLookAndFeelDecorated(true)
@@ -230,7 +230,7 @@ class SelectorGUI {
 		String user = _swing.userComboBox.getSelectedItem()
 		Mp3File song = _swing.songList.getSelectedValue()
 		if (user != null && song != null) {
-			String points = _propModel.getPoints(user, song.fileName)
+			String points = _propModel.getPoints(user, song.getFilename())
 			if (points != null) {
 				_swing.pointSlider.setValue(Integer.valueOf(points).intValue())
 			}
@@ -242,7 +242,7 @@ class SelectorGUI {
 		if ((mouseEvent.getClickCount() == 2) &&
 		((mouseEvent.getSource().equals(_swing.songList) && (_swing.songList.getSelectedIndex() > -1))
 		|| (mouseEvent.getSource().equals(_swing.selectionList)) && (_swing.selectionList.getSelectedIndex() > -1))) {
-		
+
 			def clickedList = mouseEvent.getSource()
 			def song = clickedList.getSelectedValue()
 			def songIndex = clickedList.getSelectedIndex()
@@ -327,27 +327,17 @@ class SelectorGUI {
 				Mp3File song = _swing.songList.getSelectedValue()
 				_swing.artistField.setText(song.artist)
 				_swing.albumField.setText(song.album)
-				_swing.filenameField.setText(song.fileName)
+				_swing.filenameField.setText(song.getFilename())
 				_swing.filesizeField.setText(String.valueOf(song.fileSize))
 				String user = _swing.userComboBox.getSelectedItem()
 				if ((user != null) && _propModel.isAlbumSelected()) {
-					String points = _propModel.getPoints(user, song.fileName)
+					String points = _propModel.getPoints(user, song.getFilename())
 					if (points != null) {
 						_swing.pointSlider.setValue(Integer.valueOf(points).intValue())
 					}
 				}
 			}
 		}
-	}
-
-	public void init() {
-		// Schedule a job for the event-dispatching thread:
-		// creating and showing this application's GUI.
-		javax.swing.SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						createAndShowGUI()
-					}
-				})
 	}
 
 	private void initValues() throws IOException {

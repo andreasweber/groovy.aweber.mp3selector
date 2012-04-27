@@ -36,7 +36,7 @@ class AlbumPropertiesController {
 
 	void notifyPointsChanged(String user, Mp3File song, String points) {
 		if ((user != null) && (song != null)) {
-			String s = AlbumProperties.getUserPointsProperty(user, song.fileName)
+			String s = AlbumProperties.getUserPointsProperty(user, song.getFilename())
 			_propDataModel.getAlbumProperties().put(s, points)
 		}
 	}

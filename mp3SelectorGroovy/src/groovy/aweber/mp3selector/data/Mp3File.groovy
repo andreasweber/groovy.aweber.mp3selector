@@ -8,8 +8,6 @@ class Mp3File {
 
 	String artist
 	String album
-	String fileName
-	String song
 	long fileSize
 	String path
 
@@ -19,9 +17,10 @@ class Mp3File {
 	}
 
 	String getSong() {
-		if (song == null) {
-			song = fileName.replaceFirst(SONG_PREFIX, "").replaceFirst(MP3_SUFFIX, "")
-		}
-		return song
+		return getFilename().replaceFirst(SONG_PREFIX, "").replaceFirst(MP3_SUFFIX, "")
+	}
+	
+	String getFilename() {
+		return path.substring(path.lastIndexOf(File.separator) + 1)
 	}
 }

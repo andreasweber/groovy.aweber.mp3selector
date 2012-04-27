@@ -15,7 +15,7 @@ class SelectionListCellRenderer extends DefaultListCellRenderer {
 				isSelected, cellHasFocus);
 		if ((c instanceof JLabel) && (value instanceof Mp3File)) {
 			Mp3File f = (Mp3File) value;
-			((JLabel) c).setText(f.artist + " - " + f.album + " - " + f.song);
+			((JLabel) c).setText(f.artist + " - " + f.album + " - " + f);
 		}
 		return c;
 	}
