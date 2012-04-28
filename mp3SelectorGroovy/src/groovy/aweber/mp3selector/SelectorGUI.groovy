@@ -361,10 +361,9 @@ class SelectorGUI {
 
 		ListModel m = _swing.artistList.getModel()
 		_swing.artistList.setSelectedIndex(0)
-		if (_swing.userComboBox.getItemCount() > 0) {
-			_swing.userComboBox.setSelectedIndex(0)
-		}
-		info(_mp3Collection.getNumberOfFiles() + " MP3-Dateien eingelesen")
+		_swing.userComboBox.setSelectedItem(SelectorConfig.getDefaultUser())
+		
+		info(_mp3Collection.getNumberOfFiles() + " Musik-Dateien eingelesen")
 	}
 
 	void info(String text) {

@@ -2,7 +2,7 @@ package groovy.aweber.mp3selector
 
 // TODO 's
 // - songs dynamisch (nach)laden
-// - drag and drop
+// - fix: drag and drop
 // - ID3 tags in detail fields
 // - neue Genres
 // - pictures
@@ -15,6 +15,7 @@ class Selector {
 		cli.h(longOpt: 'help', 'display usage info')
 		cli.r(longOpt: 'root', 'music root dir', args: 1, required: true)
 		cli.p(longOpt: 'player', 'file path of used player', args: 1)
+		cli.u(longOpt: 'user', 'default user', args: 1)
 		cli.playlist('number of playlist songs', args: 1)
 		def options = cli.parse(args)
 		if (options == null || options.h) {
@@ -46,6 +47,9 @@ class Selector {
 				System.exit(0)
 			}
 			props.put(SelectorConfig.PROP_PLAYLIST_SIZE, options.playlist)
+		}
+		if (options.user) {
+			props.put(SelectorConfig.PROP_DEFAULT_USER, options.user)
 		}
 		SelectorConfig.setCommandLineProps(props)
 	

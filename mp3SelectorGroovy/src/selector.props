@@ -7,3 +7,6 @@ playlist = 30
 # file path of used music player 
 #player = C:/Freeware/Musik/Winamp/winamp.exe
 player = C:/Programme/Windows Media Player/wmplayer.exe
+
+# default user
+user = Andreas
