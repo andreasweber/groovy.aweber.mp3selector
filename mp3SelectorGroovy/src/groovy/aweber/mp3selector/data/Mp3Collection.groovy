@@ -1,5 +1,6 @@
 package groovy.aweber.mp3selector.data
 
+import java.util.concurrent.ConcurrentHashMap
 import groovy.aweber.mp3selector.data.Mp3File
 
 /** contains the whole music collection. */
@@ -10,9 +11,9 @@ class Mp3Collection {
 	// key: artist, value: Map (key: album, value: List of Mp3File))
 	Map<String, TreeMap> _artistMap = new TreeMap<String, TreeMap>()
 	// key: genre (String), value: List of Mp3File
-	Map<String, List> _genreClassification = new HashMap<String, List>(3)
+	Map<String, List> _genreClassification = new ConcurrentHashMap<String, List>(3)
 	// key: user (String), value: Map (key: Integer, value: List of Mp3File)
-	Map<String, Map> _userClassification = new HashMap<String, Map>(2)
+	Map<String, Map> _userClassification = new ConcurrentHashMap<String, Map>()
 
 	void addArtist(String artist) {
 		_numberOfArtists++

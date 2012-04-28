@@ -36,6 +36,12 @@ class SelectorGUI {
 
 	/** Create the GUI elements with Groovy SwingBuilder. */
 	public void init() {
+		
+		def collReaderThread = Thread.start {
+			def mp3Reader = new Mp3CollectionReader()
+			_mp3Collection = mp3Reader.readMp3Collection(SelectorConfig.getMusicRootDir())
+		}
+		
 		UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel")
 		// Make sure we have nice window decorations.
 		JFrame.setDefaultLookAndFeelDecorated(true)
@@ -132,7 +138,8 @@ class SelectorGUI {
 				label(id: 'statusLabel')
 			}
 		}
-
+		
+		collReaderThread.join();
 		initValues()
 
 		def frame = _swing.frame(title: "SelectorGUI", defaultCloseOperation: JFrame.EXIT_ON_CLOSE,
@@ -341,9 +348,6 @@ class SelectorGUI {
 	}
 
 	private void initValues() throws IOException {
-		Mp3CollectionReader mp3Reader = new Mp3CollectionReader()
-		_mp3Collection = mp3Reader.readMp3Collection(SelectorConfig.getMusicRootDir())
-
 		Iterator userIt = _mp3Collection.getUsers().iterator()
 		while (userIt.hasNext()) {
 			_swing.userComboBox.addItem(userIt.next())

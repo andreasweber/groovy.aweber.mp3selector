@@ -2,6 +2,7 @@ package groovy.aweber.mp3selector
 
 // TODO 's
 // - songs dynamisch (nach)laden
+// - drag and drop
 // - ID3 tags in detail fields
 // - neue Genres
 // - pictures
