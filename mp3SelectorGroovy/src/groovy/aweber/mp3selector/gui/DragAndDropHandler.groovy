@@ -1,136 +1,134 @@
 package groovy.aweber.mp3selector.gui
 
-import groovy.aweber.mp3selector.data.Mp3File;
+import groovy.aweber.mp3selector.data.Mp3File
 
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.IOException;
+import java.awt.datatransfer.DataFlavor
+import java.awt.datatransfer.Transferable
+import java.awt.datatransfer.UnsupportedFlavorException
+import java.io.IOException
 
-import javax.swing.DefaultListModel;
-import javax.swing.JComponent;
-import javax.swing.JList;
-import javax.swing.TransferHandler;
+import javax.swing.DefaultListModel
+import javax.swing.JComponent
+import javax.swing.JList
+import javax.swing.TransferHandler
 
+/** Drag'n'Drop transfer: Selected song from song list can be transfered to playlist. */ 
 class DragAndDropHandler extends TransferHandler {
-	DataFlavor _dataFlavorMp3File;
-	String _dataFlavorMp3FileType = DataFlavor.javaJVMLocalObjectMimeType + ";class=" + Mp3File.class.getName();
-	JList _source = null;
+	DataFlavor _dataFlavorMp3File
+	String _dataFlavorMp3FileType = DataFlavor.javaJVMLocalObjectMimeType + ";class=" + Mp3File.class.getName()
+	JList _source = null
 
 	DragAndDropHandler() {
 		try {
-			_dataFlavorMp3File = new DataFlavor(_dataFlavorMp3FileType);
+			_dataFlavorMp3File = new DataFlavor(_dataFlavorMp3FileType)
 		} catch (ClassNotFoundException e) {
-			System.out.println("Mp3FileTransferHandler: unable to create data flavor");
-			e.printStackTrace();
+			throw new RuntimeException("Unable to create data flavor", e)
 		}
 	}
 
- boolean importData(JComponent c, Transferable t) {
-		JList target = null;
-		Mp3File aMp3File = null;
+	boolean importData(JComponent c, Transferable t) {
+		JList target = null
+		Mp3File aMp3File = null
 		if (!canImport(c, t.getTransferDataFlavors())) {
-			return false;
+			return false
 		}
 		try {
-			target = (JList) c;
+			target = (JList) c
 			if (hasFlavor(t.getTransferDataFlavors())) {
-				aMp3File = (Mp3File) t.getTransferData(_dataFlavorMp3File);
+				aMp3File = (Mp3File) t.getTransferData(_dataFlavorMp3File)
 			} else {
-				return false;
+				return false
 			}
 		} catch (UnsupportedFlavorException ufe) {
-			System.out.println("importData: unsupported data flavor");
-			ufe.printStackTrace();
-			return false;
+			System.out.println("importData: unsupported data flavor")
+			ufe.printStackTrace()
+			return false
 		} catch (IOException ioe) {
-			System.out.println("importData: I/O exception");
-			ioe.printStackTrace();
-			return false;
+			System.out.println("importData: I/O exception")
+			ioe.printStackTrace()
+			return false
 		}
 
 		// We'll drop at the current selected index.
-		int index = target.getSelectedIndex();
+		int index = target.getSelectedIndex()
 
 		// Prevent the user from dropping data back on itself.
 		if (_source.equals(target)) {
-			return true;
+			return true
 		}
 
-		DefaultListModel listModel = (DefaultListModel) target.getModel();
-		int max = listModel.getSize();
+		DefaultListModel listModel = (DefaultListModel) target.getModel()
+		int max = listModel.getSize()
 		if (index < 0) {
-			index = max;
+			index = max
 		} else {
-			index++;
+			index++
 			if (index > max) {
-				index = max;
+				index = max
 			}
 		}
-		listModel.add(index, aMp3File);
-		return true;
+		listModel.add(index, aMp3File)
+		return true
 	}
 
 	private boolean hasFlavor(DataFlavor[] flavors) {
 		if (_dataFlavorMp3File == null) {
-			return false;
+			return false
 		}
 
 		for (int i = 0; i < flavors.length; i++) {
 			if (flavors[i].equals(_dataFlavorMp3File)) {
-				return true;
+				return true
 			}
 		}
-		return false;
+		return false
 	}
 
 	boolean canImport(JComponent c, DataFlavor[] flavors) {
 		if (hasFlavor(flavors)) {
-			return true;
+			return true
 		}
-		return false;
+		return false
 	}
 
 	protected Transferable createTransferable(JComponent c) {
 		if (c instanceof JList) {
-			_source = (JList) c;
-			Object value = _source.getSelectedValue();
-			if (value == null) {
-				return null;
+			_source = (JList) c
+			def transferObject = _source.getSelectedValue()
+			if (transferObject != null) {
+				return new Mp3FileTransferable(transferObject)
 			}
-			Mp3File transferFile = (Mp3File) value;
-			return new Mp3FileTransferable(transferFile);
 		}
-		return null;
+		return null
 	}
 
 	int getSourceActions(JComponent c) {
-		return COPY;
+		return TransferHandler.COPY
 	}
 
 	class Mp3FileTransferable implements Transferable {
-		Mp3File data;
+		Mp3File data
 
 		public Mp3FileTransferable(Mp3File file) {
-			data = file;
+			data = file
 		}
 
 		public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException {
 			if (!isDataFlavorSupported(flavor)) {
-				throw new UnsupportedFlavorException(flavor);
+				throw new UnsupportedFlavorException(flavor)
 			}
-			return data;
+			return data
 		}
 
 		public DataFlavor[] getTransferDataFlavors() {
-			return new DataFlavor[_dataFlavorMp3File];
+			return new DataFlavor[_dataFlavorMp3File]
 		}
 
 		public boolean isDataFlavorSupported(DataFlavor flavor) {
 			if (_dataFlavorMp3File.equals(flavor)) {
-				return true;
+				return true
 			}
-			return false;
+			return false
 		}
 	}
 }

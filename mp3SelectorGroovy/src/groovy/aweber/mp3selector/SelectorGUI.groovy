@@ -66,8 +66,10 @@ class SelectorGUI {
 				}
 				// song list
 				scrollPane() {
-					list(id: 'songList', model: _songListModel, valueChanged: valueChanged_songList, mouseClicked: mouse_doubleClicked,
-							selectionMode: ListSelectionModel.SINGLE_SELECTION, visibleRowCount: 10, dragEnabled: true, transferHandler: mp3TransferHandler)
+					list(id: 'songList', model: _songListModel, 
+						    valueChanged: valueChanged_songList, mouseClicked: mouse_doubleClicked,
+							selectionMode: ListSelectionModel.SINGLE_SELECTION, visibleRowCount: 10, 
+							dragEnabled: true, transferHandler: mp3TransferHandler)
 				}
 			}
 			// detail panel
