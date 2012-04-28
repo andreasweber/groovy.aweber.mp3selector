@@ -121,7 +121,7 @@ class DragAndDropHandler extends TransferHandler {
 		}
 
 		public DataFlavor[] getTransferDataFlavors() {
-			return new DataFlavor[_dataFlavorMp3File]
+			return [_dataFlavorMp3File]
 		}
 
 		public boolean isDataFlavorSupported(DataFlavor flavor) {
