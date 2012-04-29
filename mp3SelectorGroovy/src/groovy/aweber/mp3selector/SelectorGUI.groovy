@@ -2,6 +2,7 @@ package groovy.aweber.mp3selector
 
 import java.awt.*
 import java.awt.event.*
+
 import javax.swing.*
 import javax.swing.event.*
 
@@ -15,7 +16,7 @@ import groovy.aweber.mp3selector.gui.SelectionListCellRenderer
 import groovy.aweber.mp3selector.gui.DragAndDropHandler
 import groovy.aweber.mp3selector.util.Id3TagReader
 import groovy.aweber.mp3selector.util.Id3Tags
-import groovy.aweber.mp3selector.util.StringUtils;
+import groovy.aweber.mp3selector.util.StringUtils
 
 class SelectorGUI {
 	// Controller
@@ -79,21 +80,21 @@ class SelectorGUI {
 			panel(border: BorderFactory.createLoweredBevelBorder()) {
 				gridLayout(rows: 4, cols: 4)
 				label(" Artist: ")
-				textField(id: 'artistField', editable: false)
+				label(id: 'artistField', border: BorderFactory.createEtchedBorder())
 				label(" Genre: ")
-				textField(id: 'genreField', editable: false)
+				label(id: 'genreField',  border: BorderFactory.createEtchedBorder())
 				label(" Album: ")
-				textField(id: 'albumField', editable: false)
+				label(id: 'albumField',  border: BorderFactory.createEtchedBorder())
 				label(" Länge: ")
-				textField(id: 'lengthField', editable: false)
+				label(id: 'lengthField',  border: BorderFactory.createEtchedBorder())
 				label(" Titel: ")
-				textField(id: 'titleField', editable: false)
+				label(id: 'titleField', border: BorderFactory.createEtchedBorder())
 				label(" Bitrate (Bit/s): ")
-				textField(id: 'bitrateField', editable: false)
+				label(id: 'bitrateField', border: BorderFactory.createEtchedBorder())
 				label(" Jahr: ")
-				textField(id: 'yearField', editable: false)
+				label(id: 'yearField', border: BorderFactory.createEtchedBorder())
 				label(" Abtastrate (Hz): ")
-				textField(id: 'samplerateField', editable: false)
+				label(id: 'samplerateField', border: BorderFactory.createEtchedBorder())
 			}
 			// genre panel
 			panel() {

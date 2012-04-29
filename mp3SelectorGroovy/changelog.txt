@@ -1,6 +1,5 @@
 
 TODO 's
-- id3 tag fields: Schrift linksbündig, doppelte Größe für Textfelder
 - ant file for build
 - neue Genres
 - songs dynamisch (nach)laden
