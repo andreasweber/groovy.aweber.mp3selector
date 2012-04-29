@@ -1,0 +1,15 @@
+
+TODO 's
+- id3 tag fields: Schrift linksbündig, doppelte Größe für Textfelder
+- ant file for build
+- neue Genres
+- songs dynamisch (nach)laden
+- pictures
+
+v0.2.0 (not tagged yet)
+- added ID3 tag fields as replacement for detail fields
+- fixed drag'n'drop
+- added 'user' config option
+
+v0.1.0
+- initial version

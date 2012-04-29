@@ -8,7 +8,7 @@ class Mp3File {
 
 	String artist
 	String album
-	long fileSize
+	int fileSize // bytes
 	String path
 
 	@Override

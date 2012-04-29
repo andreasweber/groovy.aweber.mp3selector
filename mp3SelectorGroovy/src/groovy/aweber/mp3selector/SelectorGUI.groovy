@@ -13,6 +13,9 @@ import groovy.aweber.mp3selector.data.Mp3File
 import groovy.aweber.mp3selector.data.Mp3Collection
 import groovy.aweber.mp3selector.gui.SelectionListCellRenderer
 import groovy.aweber.mp3selector.gui.DragAndDropHandler
+import groovy.aweber.mp3selector.util.Id3TagReader
+import groovy.aweber.mp3selector.util.Id3Tags
+import groovy.aweber.mp3selector.util.StringUtils;
 
 class SelectorGUI {
 	// Controller
@@ -36,12 +39,12 @@ class SelectorGUI {
 
 	/** Create the GUI elements with Groovy SwingBuilder. */
 	public void init() {
-		
+
 		def collReaderThread = Thread.start {
 			def mp3Reader = new Mp3CollectionReader()
 			_mp3Collection = mp3Reader.readMp3Collection(SelectorConfig.getMusicRootDir())
 		}
-		
+
 		UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel")
 		// Make sure we have nice window decorations.
 		JFrame.setDefaultLookAndFeelDecorated(true)
@@ -66,23 +69,31 @@ class SelectorGUI {
 				}
 				// song list
 				scrollPane() {
-					list(id: 'songList', model: _songListModel, 
-						    valueChanged: valueChanged_songList, mouseClicked: mouse_doubleClicked,
-							selectionMode: ListSelectionModel.SINGLE_SELECTION, visibleRowCount: 10, 
+					list(id: 'songList', model: _songListModel,
+							valueChanged: valueChanged_songList, mouseClicked: mouse_doubleClicked,
+							selectionMode: ListSelectionModel.SINGLE_SELECTION, visibleRowCount: 10,
 							dragEnabled: true, transferHandler: mp3TransferHandler)
 				}
 			}
-			// detail panel
+			// id3 details panel
 			panel(border: BorderFactory.createLoweredBevelBorder()) {
-				gridLayout(rows: 4, cols: 2)
+				gridLayout(rows: 4, cols: 4)
 				label(" Artist: ")
 				textField(id: 'artistField', editable: false)
+				label(" Genre: ")
+				textField(id: 'genreField', editable: false)
 				label(" Album: ")
 				textField(id: 'albumField', editable: false)
-				label(" Dateiname: ")
-				textField(id: 'filenameField', editable: false)
-				label(" Größe (in Byte): ")
-				textField(id: 'filesizeField', editable: false)
+				label(" Länge: ")
+				textField(id: 'lengthField', editable: false)
+				label(" Titel: ")
+				textField(id: 'titleField', editable: false)
+				label(" Bitrate (Bit/s): ")
+				textField(id: 'bitrateField', editable: false)
+				label(" Jahr: ")
+				textField(id: 'yearField', editable: false)
+				label(" Abtastrate (Hz): ")
+				textField(id: 'samplerateField', editable: false)
 			}
 			// genre panel
 			panel() {
@@ -140,8 +151,8 @@ class SelectorGUI {
 				label(id: 'statusLabel')
 			}
 		}
-		
-		collReaderThread.join();
+
+		collReaderThread.join()
 		initValues()
 
 		def frame = _swing.frame(title: "SelectorGUI", defaultCloseOperation: JFrame.EXIT_ON_CLOSE,
@@ -327,17 +338,25 @@ class SelectorGUI {
 	def valueChanged_songList = {changeEvent ->
 		if (changeEvent.getValueIsAdjusting() == false) {
 			if (_swing.songList.getSelectedIndex() == -1) {
-				// No selection
 				_swing.artistField.setText("")
 				_swing.albumField.setText("")
-				_swing.filenameField.setText("")
-				_swing.filesizeField.setText("")
+				_swing.titleField.setText("")
+				_swing.yearField.setText("")
+				_swing.genreField.setText("")
+				_swing.lengthField.setText("")
+				_swing.bitrateField.setText("")
+				_swing.samplerateField.setText("")
 			} else {
 				Mp3File song = _swing.songList.getSelectedValue()
-				_swing.artistField.setText(song.artist)
-				_swing.albumField.setText(song.album)
-				_swing.filenameField.setText(song.getFilename())
-				_swing.filesizeField.setText(String.valueOf(song.fileSize))
+				Id3Tags id3tags = Id3TagReader.getId3Tags(new File(song.path))
+				_swing.artistField.setText(id3tags.artist)
+				_swing.albumField.setText(id3tags.album)
+				_swing.titleField.setText(id3tags.title)
+				_swing.yearField.setText(id3tags.year)
+				_swing.genreField.setText(id3tags.genre)
+				_swing.lengthField.setText(StringUtils.secondsToPrettyLength(id3tags.lengthInSeconds))
+				_swing.bitrateField.setText(String.valueOf((int) song.fileSize * 8 / id3tags.lengthInSeconds))
+				_swing.samplerateField.setText(String.valueOf(id3tags.sampleRate))
 				String user = _swing.userComboBox.getSelectedItem()
 				if ((user != null) && _propModel.isAlbumSelected()) {
 					String points = _propModel.getPoints(user, song.getFilename())
@@ -364,7 +383,7 @@ class SelectorGUI {
 		ListModel m = _swing.artistList.getModel()
 		_swing.artistList.setSelectedIndex(0)
 		_swing.userComboBox.setSelectedItem(SelectorConfig.getDefaultUser())
-		
+
 		info(_mp3Collection.getNumberOfFiles() + " Musik-Dateien eingelesen")
 	}
 

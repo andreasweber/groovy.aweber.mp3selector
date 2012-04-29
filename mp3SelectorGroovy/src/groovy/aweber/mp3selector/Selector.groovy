@@ -1,11 +1,5 @@
 package groovy.aweber.mp3selector
 
-// TODO 's
-// - ID3 tags in detail fields
-// - neue Genres
-// - songs dynamisch (nach)laden
-// - pictures
-
 /** Main start class. */
 class Selector {
 	
