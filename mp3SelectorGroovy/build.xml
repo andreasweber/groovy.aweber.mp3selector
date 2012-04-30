@@ -1,0 +1,30 @@
+<project default="jar">
+	<property environment="env" />
+	<path id="GROOVYPATH" location="${env.GROOVY_HOME}/embeddable/groovy-all-1.8.6.jar" />
+	<taskdef name="groovyc" classname="org.codehaus.groovy.ant.Groovyc" classpathref="GROOVYPATH" />
+
+	<target name="compile">
+		<mkdir dir="./build" />
+		<groovyc srcdir="./src" destdir="./build">
+			<classpath>
+				<pathelement path="./lib/jaudiotagger-2.0.4.jar" />
+			</classpath>
+		</groovyc>
+        <copy file="./src/selector.props" todir="./build"/>
+	</target>
+
+	<target name="jar" depends="compile">
+		<jar destfile="./mp3Selector.jar">
+			<manifest>
+				<attribute name="Main-Class" value="groovy.aweber.mp3selector.Selector" />
+				<attribute name="Class-Path" value="."/>
+			</manifest>
+            <fileset dir="./build"/>
+            <zipfileset src="./lib/groovy-all-1.8.6.jar"/>
+            <zipfileset src="./lib/commons-cli-1.2.jar"/>
+            <zipfileset src="./lib/jaudiotagger-2.0.4.jar"/>
+		</jar>
+		<delete dir="./build" />
+	</target>
+
+</project>
