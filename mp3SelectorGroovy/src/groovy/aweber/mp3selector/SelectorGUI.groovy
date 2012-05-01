@@ -102,10 +102,16 @@ class SelectorGUI {
 				buttonGroup(id: 'genreButtons')
 				radioButton(id: 'rockButton', AlbumProperties.GENRE_ROCK, actionPerformed: action_genreButton,
 						actionCommand: AlbumProperties.GENRE_ROCK, buttonGroup: _swing.genreButtons)
+				radioButton(id: 'metalButton', AlbumProperties.GENRE_METAL, actionPerformed: action_genreButton,
+						actionCommand: AlbumProperties.GENRE_METAL, buttonGroup: _swing.genreButtons)
 				radioButton(id: 'progButton', AlbumProperties.GENRE_PROG, actionPerformed: action_genreButton,
 						actionCommand: AlbumProperties.GENRE_PROG, buttonGroup: _swing.genreButtons)
+				radioButton(id: 'postButton', AlbumProperties.GENRE_POST, actionPerformed: action_genreButton,
+						actionCommand: AlbumProperties.GENRE_POST, buttonGroup: _swing.genreButtons)
 				radioButton(id: 'punkButton', AlbumProperties.GENRE_PUNK, actionPerformed: action_genreButton,
 						actionCommand: AlbumProperties.GENRE_PUNK, buttonGroup: _swing.genreButtons)
+				radioButton(id: 'altButton', AlbumProperties.GENRE_ALT, actionPerformed: action_genreButton,
+						actionCommand: AlbumProperties.GENRE_ALT, buttonGroup: _swing.genreButtons)
 			}
 			// user points panel
 			panel() {
@@ -227,10 +233,16 @@ class SelectorGUI {
 		|| actionEvent.getSource().equals(_swing.selPointsGenreButton)) {
 			if (_swing.rockButton.isSelected()) {
 				genre = AlbumProperties.GENRE_ROCK
+			} else if (_swing.metalButton.isSelected()) {
+				genre = AlbumProperties.GENRE_METAL
 			} else if (_swing.progButton.isSelected()) {
 				genre = AlbumProperties.GENRE_PROG
+			} else if (_swing.postButton.isSelected()) {
+				genre = AlbumProperties.GENRE_POST
 			} else if (_swing.punkButton.isSelected()) {
 				genre = AlbumProperties.GENRE_PUNK
+			} else if (_swing.altButton.isSelected()) {
+				genre = AlbumProperties.GENRE_ALT
 			}
 		}
 		if (actionEvent.getSource().equals(_swing.selPointsButton)
@@ -324,10 +336,16 @@ class SelectorGUI {
 				if (genre != null) {
 					if (genre.equals(AlbumProperties.GENRE_ROCK)) {
 						_swing.rockButton.setSelected(true)
+					} else if (genre.equals(AlbumProperties.GENRE_METAL)) {
+						_swing.metalButton.setSelected(true)
 					} else if (genre.equals(AlbumProperties.GENRE_PROG)) {
 						_swing.progButton.setSelected(true)
+					} else if (genre.equals(AlbumProperties.GENRE_POST)) {
+						_swing.postButton.setSelected(true)
 					} else if (genre.equals(AlbumProperties.GENRE_PUNK)) {
 						_swing.punkButton.setSelected(true)
+					} else if (genre.equals(AlbumProperties.GENRE_ALT)) {
+						_swing.altButton.setSelected(true)
 					}
 				}
 				_swing.songList.setSelectedIndex(0)
