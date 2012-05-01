@@ -8,7 +8,7 @@ class Selector {
 		cli.h(longOpt: 'help', 'display usage info')
 		cli.r(longOpt: 'root', 'music root dir', args: 1, required: true)
 		cli.p(longOpt: 'player', 'file path of used player', args: 1)
-		cli.u(longOpt: 'user', 'default user', args: 1)
+		cli.u(longOpt: 'user', 'user(s), first is default user', args: 1, valueSeparator: ',')
 		cli.playlist('number of playlist songs', args: 1)
 		def options = cli.parse(args)
 		if (options == null || options.h) {
@@ -42,7 +42,7 @@ class Selector {
 			props.put(SelectorConfig.PROP_PLAYLIST_SIZE, options.playlist)
 		}
 		if (options.user) {
-			props.put(SelectorConfig.PROP_DEFAULT_USER, options.user)
+			props.put(SelectorConfig.PROP_USERS, options.user)
 		}
 		SelectorConfig.setCommandLineProps(props)
 	

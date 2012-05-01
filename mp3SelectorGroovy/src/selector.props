@@ -8,5 +8,5 @@ playlist = 30
 #player = C:/Freeware/Musik/Winamp/winamp.exe
 player = C:/Programme/Windows Media Player/wmplayer.exe
 
-# default user
-user = Andreas
+# user(s), first is default user
+user = Andreas,Steffi

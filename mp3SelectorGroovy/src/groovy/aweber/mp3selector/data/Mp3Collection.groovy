@@ -136,8 +136,4 @@ class Mp3Collection {
 		return new ArrayList(0)
 	}
 
-	Set getUsers() {
-		return _userClassification.keySet()
-	}
-
 }

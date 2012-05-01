@@ -5,7 +5,7 @@ class SelectorConfig {
 	static final String PROP_PLAYER_PATH = "player"
 	static final String PROP_MUSIC_ROOT_DIR = "root"
 	static final String PROP_PLAYLIST_SIZE = "playlist"
-	static final String PROP_DEFAULT_USER = "user"
+	static final String PROP_USERS = "user"
 	
 	static Properties _defaultProps
 	static Properties _commandLineProps
@@ -49,7 +49,12 @@ class SelectorConfig {
 	}
 	
 	static String getDefaultUser() {
-		return getProp(PROP_DEFAULT_USER)
+		return getUsers()[0]
 	}
 
+	static String[] getUsers() {
+		String usersString = getProp(PROP_USERS)
+		String[] users = usersString.split(",")
+		return users
+	}
 }

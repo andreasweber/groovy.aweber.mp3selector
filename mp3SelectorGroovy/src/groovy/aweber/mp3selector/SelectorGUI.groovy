@@ -370,9 +370,9 @@ class SelectorGUI {
 	}
 
 	private void initValues() throws IOException {
-		Iterator userIt = _mp3Collection.getUsers().iterator()
-		while (userIt.hasNext()) {
-			_swing.userComboBox.addItem(userIt.next())
+		final String[] users = SelectorConfig.getUsers()
+		for (String user : users) {
+			_swing.userComboBox.addItem(user.trim())
 		}
 		_swing.userComboBox.setMaximumSize(_swing.userComboBox.getPreferredSize())
 
