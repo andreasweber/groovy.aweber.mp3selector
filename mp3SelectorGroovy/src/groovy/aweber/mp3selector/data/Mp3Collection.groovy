@@ -5,54 +5,74 @@ import groovy.aweber.mp3selector.data.Mp3File
 
 /** contains the whole music collection. */
 class Mp3Collection {
-	int _numberOfArtists
-	int _numberOfAlbums
+	// contains all music files
 	List<Mp3File> _mp3List = new ArrayList<Mp3File>()
 	// key: artist, value: Map (key: album, value: List of Mp3File))
-	Map<String, TreeMap> _artistMap = new TreeMap<String, TreeMap>()
+	Map _artistMap = new TreeMap()
 	// key: genre (String), value: List of Mp3File
 	Map<String, List> _genreClassification = new ConcurrentHashMap<String, List>(3)
 	// key: user (String), value: Map (key: Integer, value: List of Mp3File)
 	Map<String, Map> _userClassification = new ConcurrentHashMap<String, Map>()
 
-	void addArtist(String artist) {
-		_numberOfArtists++
+	int _numberOfAlbums
+	Mp3CollectionReader _reader // needed for lazy loading of music files
+	boolean _loaded = false
+
+	Mp3Collection(reader) {
+		_reader = reader
 	}
 
-	void addAlbum(String album) {
+	/** albumDir is stored, album music files are loaded lazy when needed. */
+	void addAlbum(String artist, File albumDir) {
 		_numberOfAlbums++
+		Map albumMap = _artistMap.get(artist)
+		if (albumMap == null) {
+			albumMap = new TreeMap()
+			_artistMap.put(artist, albumMap)
+		}
+		albumMap.put(albumDir.getName(), albumDir)
+	}
+
+	int getNumberOfArtists() {
+		return _artistMap.size()
 	}
 
 	int getNumberOfAlbums() {
 		return _numberOfAlbums
 	}
 
-	void setNumberOfAlbums(int numberOfAlbums) {
-		numberOfAlbums = numberOfAlbums
-	}
-
 	int getNumberOfFiles() {
 		return _mp3List.size()
 	}
 
-	int getNumberOfArtists() {
-		return _numberOfArtists
-	}
-
-	void setNumberOfArtists(int numberOfArtists) {
-		numberOfArtists = numberOfArtists
+	/** ensure that all music files are loaded. */
+	void ensureAllLoaded() {
+		if (!_loaded) {
+			for (final String artist : _artistMap.keySet()) {
+				def albumMap = _artistMap.get(artist)
+				for (final String album : albumMap.keySet()) {
+					def songsOrAlbumdir = albumMap.get(album)
+					if (!isAlbumLoaded(songsOrAlbumdir)) {
+						// song list of this album not loaded yet
+						_reader.readAlbum(artist, songsOrAlbumdir, this)
+					}
+				}
+			}
+			_loaded = true
+		}
 	}
 
 	void addFile(Mp3File mp3, String genre, Map userPointMap) {
 		_mp3List.add(mp3)
 		if (mp3.artist != null) {
-			Map<String, List> albumMap = _artistMap.get(mp3.artist)
+			Map albumMap = _artistMap.get(mp3.artist)
 			if (albumMap == null) {
-				albumMap = new TreeMap<String, List>()
+				albumMap = new TreeMap()
 				_artistMap.put(mp3.artist, albumMap)
 			}
-			List<Mp3File> songs = albumMap.get(mp3.album)
-			if (songs == null) {
+			def songs = albumMap.get(mp3.album)
+			if (!isAlbumLoaded(songs)) {
+				// first song that's loaded for this album - create song list
 				songs = new ArrayList<Mp3File>(10)
 				albumMap.put(mp3.album, songs)
 			}
@@ -86,18 +106,16 @@ class Mp3Collection {
 		}
 	}
 
-	Mp3File getFile(int index) {
-		return _mp3List.get(index)
-	}
-
 	List getGenreCollection(String genre) {
+		ensureAllLoaded()
 		if (_genreClassification.get(genre) != null) {
 			return _genreClassification.get(genre)
 		}
-		return new ArrayList(0)
+		return Collections.EMPTY_LIST
 	}
 
 	Set getUserCollection(String user, Integer points) {
+		ensureAllLoaded()
 		Set resultSet = new HashSet()
 		Map m = _userClassification.get(user)
 		if (m != null) {
@@ -114,6 +132,7 @@ class Mp3Collection {
 	}
 
 	List<Mp3File> getMp3List() {
+		ensureAllLoaded()
 		return _mp3List
 	}
 
@@ -125,15 +144,26 @@ class Mp3Collection {
 		if (_artistMap.get(artist) != null) {
 			return _artistMap.get(artist).keySet()
 		}
-		return new HashSet(0)
+		return Collections.EMPTY_SET
 	}
 
 	List getMp3List(String artist, String album) {
-		Map<String, List> albumMap = _artistMap.get(artist)
+		Map albumMap = _artistMap.get(artist)
 		if (albumMap != null) {
-			return albumMap.get(album)
+			def a = albumMap.get(album)
+			if (!isAlbumLoaded(a)) {
+				_reader.readAlbum(artist, a, this)  // lazy reading (a = album file)
+				return albumMap.get(album) // now we can be sure that music files are loaded
+			}
+			return a // list of music files
 		}
-		return new ArrayList(0)
+		return Collections.EMPTY_LIST
+	}
+
+	/** whether the songs of this album have been already loaded. */
+	boolean isAlbumLoaded(albumContent) {
+		return (albumContent instanceof List)
+		// if song list is not loaded yet, the albumContent is 'File albumDir'
 	}
 
 }

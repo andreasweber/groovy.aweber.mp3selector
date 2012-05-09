@@ -39,13 +39,7 @@ class SelectorGUI {
 	}
 
 	/** Create the GUI elements with Groovy SwingBuilder. */
-	public void init() {
-
-		def collReaderThread = Thread.start {
-			def mp3Reader = new Mp3CollectionReader()
-			_mp3Collection = mp3Reader.readMp3Collection(SelectorConfig.getMusicRootDir())
-		}
-
+	public void init() {		
 		UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel")
 		// Make sure we have nice window decorations.
 		JFrame.setDefaultLookAndFeelDecorated(true)
@@ -159,7 +153,6 @@ class SelectorGUI {
 			}
 		}
 
-		collReaderThread.join()
 		initValues()
 
 		def frame = _swing.frame(title: "SelectorGUI", defaultCloseOperation: JFrame.EXIT_ON_CLOSE,
@@ -388,6 +381,9 @@ class SelectorGUI {
 	}
 
 	private void initValues() throws IOException {
+		def mp3Reader = new Mp3CollectionReader()
+		_mp3Collection = mp3Reader.readMp3Collection(SelectorConfig.getMusicRootDir())
+		
 		final String[] users = SelectorConfig.getUsers()
 		for (String user : users) {
 			_swing.userComboBox.addItem(user.trim())
@@ -399,11 +395,11 @@ class SelectorGUI {
 			_artistListModel.addElement(artistIt.next())
 		}
 
-		ListModel m = _swing.artistList.getModel()
 		_swing.artistList.setSelectedIndex(0)
 		_swing.userComboBox.setSelectedItem(SelectorConfig.getDefaultUser())
 
-		info(_mp3Collection.getNumberOfFiles() + " Musik-Dateien eingelesen")
+		info(_mp3Collection.getNumberOfArtists() + " Künstler mit " 
+			+ _mp3Collection.getNumberOfAlbums() + " Musik-Alben eingelesen")
 	}
 
 	void info(String text) {

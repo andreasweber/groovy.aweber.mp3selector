@@ -1,7 +1,9 @@
 
 TODO 's
-- songs dynamisch (nach)laden
 - pictures
+
+v0.3.0
+- lazy loading of music files
 
 v0.2.0
 - new genres: metal, post, alternative
