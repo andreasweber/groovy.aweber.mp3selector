@@ -6,6 +6,7 @@ class SelectorConfig {
 	static final String PROP_MUSIC_ROOT_DIR = "root"
 	static final String PROP_PLAYLIST_SIZE = "playlist"
 	static final String PROP_USERS = "user"
+	static final String PROP_IMAGE_FILE = "image"
 	
 	static Properties _defaultProps
 	static Properties _commandLineProps
@@ -56,5 +57,9 @@ class SelectorConfig {
 		String usersString = getProp(PROP_USERS)
 		String[] users = usersString.split(",")
 		return users
+	}
+	
+	static String getAlbumImageFile() {
+		return getProp(PROP_IMAGE_FILE)
 	}
 }

@@ -1,8 +1,7 @@
 
-TODO 's
-- pictures
 
-v0.3.0
+v0.3.0 (not tagged yet)
+- show album covers 
 - lazy loading of music files
 
 v0.2.0

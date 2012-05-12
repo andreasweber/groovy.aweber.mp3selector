@@ -3,6 +3,7 @@ package groovy.aweber.mp3selector
 import java.awt.*
 import java.awt.event.*
 
+import javax.imageio.ImageIO
 import javax.swing.*
 import javax.swing.event.*
 
@@ -12,6 +13,7 @@ import groovy.aweber.mp3selector.data.AlbumProperties
 import groovy.aweber.mp3selector.data.Mp3CollectionReader
 import groovy.aweber.mp3selector.data.Mp3File
 import groovy.aweber.mp3selector.data.Mp3Collection
+import groovy.aweber.mp3selector.gui.ImagePanel
 import groovy.aweber.mp3selector.gui.SelectionListCellRenderer
 import groovy.aweber.mp3selector.gui.DragAndDropHandler
 import groovy.aweber.mp3selector.util.Id3TagReader
@@ -39,7 +41,7 @@ class SelectorGUI {
 	}
 
 	/** Create the GUI elements with Groovy SwingBuilder. */
-	public void init() {		
+	public void init() {
 		UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel")
 		// Make sure we have nice window decorations.
 		JFrame.setDefaultLookAndFeelDecorated(true)
@@ -71,24 +73,33 @@ class SelectorGUI {
 				}
 			}
 			// id3 details panel
-			panel(border: BorderFactory.createLoweredBevelBorder()) {
-				gridLayout(rows: 4, cols: 4)
-				label(" Artist: ")
-				label(id: 'artistField', border: BorderFactory.createEtchedBorder())
-				label(" Genre: ")
-				label(id: 'genreField',  border: BorderFactory.createEtchedBorder())
-				label(" Album: ")
-				label(id: 'albumField',  border: BorderFactory.createEtchedBorder())
-				label(" Länge: ")
-				label(id: 'lengthField',  border: BorderFactory.createEtchedBorder())
-				label(" Titel: ")
-				label(id: 'titleField', border: BorderFactory.createEtchedBorder())
-				label(" Bitrate (Bit/s): ")
-				label(id: 'bitrateField', border: BorderFactory.createEtchedBorder())
-				label(" Jahr: ")
-				label(id: 'yearField', border: BorderFactory.createEtchedBorder())
-				label(" Abtastrate (Hz): ")
-				label(id: 'samplerateField', border: BorderFactory.createEtchedBorder())
+			panel() {
+				borderLayout()
+				panel(id: 'id3Panel', constraints: BorderLayout.CENTER, border: BorderFactory.createLoweredBevelBorder()) {
+					gridLayout(rows: 4, cols: 4)
+					label(" Artist: ")
+					label(id: 'artistField', border: BorderFactory.createEtchedBorder())
+					label(" Genre: ")
+					label(id: 'genreField',  border: BorderFactory.createEtchedBorder())
+					label(" Album: ")
+					label(id: 'albumField',  border: BorderFactory.createEtchedBorder())
+					label(" Länge: ")
+					label(id: 'lengthField',  border: BorderFactory.createEtchedBorder())
+					label(" Titel: ")
+					label(id: 'titleField', border: BorderFactory.createEtchedBorder())
+					label(" Bitrate (Bit/s): ")
+					label(id: 'bitrateField', border: BorderFactory.createEtchedBorder())
+					label(" Jahr: ")
+					label(id: 'yearField', border: BorderFactory.createEtchedBorder())
+					label(" Abtastrate (Hz): ")
+					label(id: 'samplerateField', border: BorderFactory.createEtchedBorder())
+				}
+				// size of imagePanel is adapted to id3Panel height
+				Dimension d = _swing.id3Panel.getPreferredSize()
+				int h = d.getHeight()
+				panel(constraints: BorderLayout.LINE_END, border: BorderFactory.createLoweredBevelBorder()) {
+					container(id: 'imagePanel', preferredSize: new Dimension(h+4, h+4), new ImagePanel())
+				}
 			}
 			// genre panel
 			panel() {
@@ -313,6 +324,7 @@ class SelectorGUI {
 			if (_swing.albumList.getSelectedIndex() == -1) {
 				// No selection
 				_songListModel.removeAllElements()
+				_swing.imagePanel.setImage(null)
 			} else {
 				String artist = _swing.artistList.getSelectedValue()
 				String album = _swing.albumList.getSelectedValue()
@@ -342,6 +354,16 @@ class SelectorGUI {
 					}
 				}
 				_swing.songList.setSelectedIndex(0)
+
+				String imageFile = SelectorConfig.getAlbumImageFile()
+				String albumDir = SelectorConfig.getAlbumPath(artist, album)
+				File albumCover = new File(albumDir, imageFile)
+				if (albumCover.canRead()) {
+					Image image = ImageIO.read(albumCover)
+					_swing.imagePanel.setImage(image)
+				} else {
+					_swing.imagePanel.setImage(null)
+				}
 			}
 		}
 	}
@@ -383,7 +405,7 @@ class SelectorGUI {
 	private void initValues() throws IOException {
 		def mp3Reader = new Mp3CollectionReader()
 		_mp3Collection = mp3Reader.readMp3Collection(SelectorConfig.getMusicRootDir())
-		
+
 		final String[] users = SelectorConfig.getUsers()
 		for (String user : users) {
 			_swing.userComboBox.addItem(user.trim())
@@ -398,8 +420,8 @@ class SelectorGUI {
 		_swing.artistList.setSelectedIndex(0)
 		_swing.userComboBox.setSelectedItem(SelectorConfig.getDefaultUser())
 
-		info(_mp3Collection.getNumberOfArtists() + " Künstler mit " 
-			+ _mp3Collection.getNumberOfAlbums() + " Musik-Alben eingelesen")
+		info(_mp3Collection.getNumberOfArtists() + " Künstler mit "
+				+ _mp3Collection.getNumberOfAlbums() + " Musik-Alben eingelesen")
 	}
 
 	void info(String text) {

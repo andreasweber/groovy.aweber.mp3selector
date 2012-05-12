@@ -10,3 +10,6 @@ player = C:/Programme/Windows Media Player/wmplayer.exe
 
 # user(s), first is default user
 user = Andreas,Steffi
+
+# album cover image names
+image = folder.jpg
