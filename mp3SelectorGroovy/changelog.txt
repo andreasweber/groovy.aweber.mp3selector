@@ -1,5 +1,4 @@
 
-
 v0.3.0 (not tagged yet)
 - show album covers 
 - lazy loading of music files

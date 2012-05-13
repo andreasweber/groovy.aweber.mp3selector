@@ -153,6 +153,10 @@ class Mp3Collection {
 			def a = albumMap.get(album)
 			if (!isAlbumLoaded(a)) {
 				_reader.readAlbum(artist, a, this)  // lazy reading (a = album file)
+				if (!isAlbumLoaded(a)) {
+					// there may be empty album folders, or some that don't match mp3 file pattern
+					return Collections.EMPTY_LIST
+				}
 				return albumMap.get(album) // now we can be sure that music files are loaded
 			}
 			return a // list of music files
