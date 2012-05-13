@@ -26,6 +26,7 @@ class Mp3CollectionReader {
 		AlbumProperties albumProps = _propHandler.getAlbumProperties(albumDir.getCanonicalPath())
 		String genre = albumProps.getGenre()
 		Set<String> userSet = albumProps.getUsers()
+		boolean atLeastOneFile = false
 		albumDir.eachFileMatch(Mp3File.MP3_PATTERN) { File f ->
 			Mp3File file = new Mp3File(artist: artist, album: albumDir.name,
 					fileSize: f.length(), path : f.path)
@@ -35,6 +36,10 @@ class Mp3CollectionReader {
 				userPointMap.put(user, points)
 			}
 			coll.addFile(file, genre, userPointMap)
+			atLeastOneFile = true
+		}
+		if (!atLeastOneFile) {
+			coll.emptyAlbum(artist, albumDir.getName())
 		}
 	}
 }

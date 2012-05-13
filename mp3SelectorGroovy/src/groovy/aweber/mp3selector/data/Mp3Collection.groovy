@@ -32,6 +32,17 @@ class Mp3Collection {
 		}
 		albumMap.put(albumDir.getName(), albumDir)
 	}
+	
+	/** called for albums without music files, or files doesn't match pattern. */
+	void emptyAlbum(String artist, String album) {
+		Map albumMap = _artistMap.get(artist)
+		if (albumMap == null) {
+			albumMap = new TreeMap()
+			_artistMap.put(artist, albumMap)
+		}
+		albumMap.put(album, Collections.EMPTY_LIST)
+	}
+
 
 	int getNumberOfArtists() {
 		return _artistMap.size()
@@ -153,11 +164,8 @@ class Mp3Collection {
 			def a = albumMap.get(album)
 			if (!isAlbumLoaded(a)) {
 				_reader.readAlbum(artist, a, this)  // lazy reading (a = album file)
-				if (!isAlbumLoaded(a)) {
-					// there may be empty album folders, or some that don't match mp3 file pattern
-					return Collections.EMPTY_LIST
-				}
-				return albumMap.get(album) // now we can be sure that music files are loaded
+				// now we can be sure that music files are loaded
+				return getMp3List(artist, album) 
 			}
 			return a // list of music files
 		}
